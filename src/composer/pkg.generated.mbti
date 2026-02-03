@@ -1,0 +1,111 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mizchi/mwac/composer"
+
+// Values
+pub fn compose_wac_file(String, best_effort? : Bool, dce? : Bool) -> Result[Bytes, String]
+
+pub fn compose_wac_source(String, String, best_effort? : Bool, dce? : Bool) -> Result[Bytes, String]
+
+pub fn parse_wac(String) -> Result[WacDocument, WacParseError]
+
+pub fn resolve_wac_summary(String, String, best_effort? : Bool) -> Result[WacResolveSummary, String]
+
+// Errors
+type WacParseError
+pub impl Show for WacParseError
+
+// Types and methods
+pub(all) enum WacArg {
+  SpreadAll
+  SpreadInstance(String)
+  Named(WacName, WacExpr)
+  Inferred(WacExpr)
+}
+pub impl Show for WacArg
+pub impl ToJson for WacArg
+
+pub(all) struct WacDocument {
+  pkg : String
+  targets : String?
+  stmts : Array[WacStmt]
+}
+pub impl Show for WacDocument
+pub impl ToJson for WacDocument
+
+pub(all) struct WacExport {
+  expr : WacExpr
+  all : Bool
+  as_name : String?
+}
+pub impl Show for WacExport
+pub impl ToJson for WacExport
+
+pub(all) enum WacExpr {
+  Name(String)
+  Access(WacExpr, WacName)
+  New(WacNew)
+}
+pub impl Show for WacExpr
+pub impl ToJson for WacExpr
+
+pub(all) struct WacImport {
+  local_name : String
+  import_name : String
+  ty : WacImportType
+}
+pub impl Show for WacImport
+pub impl ToJson for WacImport
+
+pub(all) enum WacImportType {
+  Package(String)
+  Ident(String)
+  InlineInterface(String)
+  InlineFunc(String)
+}
+pub impl Show for WacImportType
+pub impl ToJson for WacImportType
+
+pub(all) struct WacInstantiationSummary {
+  name : String
+  component : String
+  args : Array[String]
+}
+pub impl Show for WacInstantiationSummary
+pub impl ToJson for WacInstantiationSummary
+
+pub(all) struct WacName {
+  value : String
+  exact : Bool
+}
+pub impl Show for WacName
+pub impl ToJson for WacName
+
+pub(all) struct WacNew {
+  pkg : String
+  args : Array[WacArg]
+}
+pub impl Show for WacNew
+pub impl ToJson for WacNew
+
+pub(all) struct WacResolveSummary {
+  pkg : String
+  components : Array[String]
+  instantiations : Array[WacInstantiationSummary]
+  exports : Array[String]
+  imports : Array[String]
+}
+pub impl Show for WacResolveSummary
+pub impl ToJson for WacResolveSummary
+
+pub(all) enum WacStmt {
+  Let(String, WacExpr)
+  Export(WacExport)
+  Import(WacImport)
+}
+pub impl Show for WacStmt
+pub impl ToJson for WacStmt
+
+// Type aliases
+
+// Traits
+
