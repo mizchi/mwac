@@ -1,64 +1,59 @@
-# MoonBit Template
+# mwac
 
-A minimal MoonBit project template with CI, justfile, and AI coding assistant support.
+A WebAssembly Component Model composition tool written in [MoonBit](https://www.moonbitlang.com/).
 
-## Usage
+Parses [WAC (WebAssembly Compositions)](https://github.com/bytecodealliance/wac) `.wac` scripts and composes multiple WebAssembly Components into a single component via plug/compose.
 
-Clone this repository and start coding:
+## Features
 
-```bash
-git clone https://github.com/mizchi/moonbit-template my-project
-cd my-project
+- `.wac` script parsing and resolution
+- Component Model binary (`.wasm`) parsing (import/export extraction, type analysis)
+- `plug` — satisfy a component's imports with another component's exports
+- `compose` — compose multiple components based on a WAC script
+- Dead Code Elimination (prune unused instances)
+- WIT interface type compatibility checking
+
+## Project Structure
+
+```
+src/
+├── component/    # Component Model binary parser, plug, encoder
+└── composer/     # WAC parser, resolver, composer, DCE
+
+examples/
+├── hello/        # Single component example
+├── compose/      # Multi-component composition example
+├── core-module/  # Core Module plug example
+└── wac/          # WAC script example
 ```
 
-Update `moon.mod.json` with your module name:
+## WAC Script Example
 
-```json
-{
-  "name": "your-username/your-project",
-  ...
-}
+```wac
+package example:composition;
+
+let hello = new example:hello {};
+let greeter = new example:greeter {
+  hello: hello.hello,
+};
+
+export greeter.greet;
 ```
 
-## Quick Commands
+## Development
 
 ```bash
 just           # check + test
 just fmt       # format code
 just check     # type check
 just test      # run tests
-just test-update  # update snapshot tests
 just run       # run main
-just info      # generate type definition files
 ```
 
-## Project Structure
+## Dependencies
 
-```
-my-project/
-├── moon.mod.json      # Module configuration
-├── src/
-│   ├── moon.pkg       # Package configuration
-│   ├── lib.mbt        # Library code
-│   ├── lib_test.mbt   # Tests
-│   ├── lib_bench.mbt  # Benchmarks
-│   ├── API.mbt.md     # Doc tests
-│   └── main/
-│       ├── moon.pkg
-│       └── main.mbt   # Entry point
-├── justfile           # Task runner
-└── .github/workflows/
-    └── ci.yml         # GitHub Actions CI
-```
-
-## Features
-
-- `src/` directory structure with `moon.pkg` format
-- Snapshot testing with `inspect()`
-- Doc tests in `.mbt.md` files
-- Benchmarks with `moon bench`
-- GitHub Actions CI
-- Claude Code / GitHub Copilot support (AGENTS.md)
+- [MoonBit](https://www.moonbitlang.com/) toolchain
+- [mizchi/wit](https://mooncakes.io/docs/#/mizchi/wit/) — WIT parser
 
 ## License
 
