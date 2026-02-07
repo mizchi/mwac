@@ -4,14 +4,33 @@ A WebAssembly Component Model composition tool written in [MoonBit](https://www.
 
 Parses [WAC (WebAssembly Compositions)](https://github.com/bytecodealliance/wac) `.wac` scripts and composes multiple WebAssembly Components into a single component via plug/compose.
 
+## Positioning (mwac + walyze)
+
+- `mwac`: WAC API / composition (bundler role)
+- `walyze`: wasm/component optimizer + profiler (minifier role)
+
+Architecture guardrails:
+
+- `mwac` is responsible for composition only (dependency resolution, instantiate/export planning, component assembly).
+- binary-level optimization and profiling belong to `walyze`.
+- dependency direction is fixed to `walyze -> mwac` (no direct `mwac -> walyze` dependency).
+- integration contract is bytes I/O: `mwac` emits wasm/component bytes, then `walyze` optimizes/analyzes those bytes.
+
 ## Features
 
 - `.wac` script parsing and resolution
 - Component Model binary (`.wasm`) parsing (import/export extraction, type analysis)
 - `plug` — satisfy a component's imports with another component's exports
 - `compose` — compose multiple components based on a WAC script
-- Dead Code Elimination (prune unused instances)
+- Dead Code Elimination (composition-plan level pruning of unused instances)
 - WIT interface type compatibility checking
+
+## Recommended Pipeline (Bundler + Minifier)
+
+1. Compose components with `mwac` (produce `.component.wasm`)
+2. Optimize/profile the output with `walyze`
+
+This keeps API and optimization concerns separated while preserving a reproducible build flow.
 
 ## Project Structure
 
