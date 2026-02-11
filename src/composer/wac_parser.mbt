@@ -411,7 +411,6 @@ fn WacParser::parse_expr(self : WacParser) -> WacExpr raise WacParseError {
       }
       self.skip_ws()
       let _ = self.consume_char(b',')
-
     }
     return WacExpr::New({ pkg, args })
   }

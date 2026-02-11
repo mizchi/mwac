@@ -205,6 +205,14 @@ fn check_wit_type_def(
       check_wit_resource(id, comp_val, space, type_map, res_map, ctx)
     @wit.RTypeKind::Handle(kind) =>
       check_wit_handle(kind, comp_val, space, type_map, res_map, ctx)
+    @wit.RTypeKind::Future(inner) =>
+      check_wit_future(
+        wit_res, id, inner, comp_val, space, type_map, res_map, ctx,
+      )
+    @wit.RTypeKind::Stream(inner) =>
+      check_wit_stream(
+        wit_res, id, inner, comp_val, space, type_map, res_map, ctx,
+      )
   }
 }
 
@@ -253,9 +261,11 @@ fn check_wit_record(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_record(
-          wit_res, id, fields, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_record(
+            wit_res, id, fields, def, def_space, type_map, res_map, ctx,
+          )
+        },
         ctx,
       )
     _ => Err("expected record")
@@ -304,9 +314,11 @@ fn check_wit_variant(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_variant(
-          wit_res, id, cases, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_variant(
+            wit_res, id, cases, def, def_space, type_map, res_map, ctx,
+          )
+        },
         ctx,
       )
     _ => Err("expected variant")
@@ -334,9 +346,11 @@ fn check_wit_list(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_list(
-          wit_res, id, inner, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_list(
+            wit_res, id, inner, def, def_space, type_map, res_map, ctx,
+          )
+        },
         ctx,
       )
     _ => Err("expected list")
@@ -364,9 +378,11 @@ fn check_wit_option(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_option(
-          wit_res, id, inner, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_option(
+            wit_res, id, inner, def, def_space, type_map, res_map, ctx,
+          )
+        },
         ctx,
       )
     _ => Err("expected option")
@@ -414,12 +430,80 @@ fn check_wit_result(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_result(
-          wit_res, id, ok, err, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_result(
+            wit_res, id, ok, err, def, def_space, type_map, res_map, ctx,
+          )
+        },
         ctx,
       )
     _ => Err("expected result")
+  }
+}
+
+///|
+fn check_wit_future(
+  wit_res : @wit.Resolve,
+  id : Int,
+  inner : @wit.RType,
+  comp_val : ComponentValType,
+  space : TypeSpace,
+  type_map : Map[String, UInt],
+  res_map : Map[String, UInt],
+  ctx : TypeResolveContext,
+) -> Result[Unit, String] {
+  match comp_val {
+    ComponentValType::Future(Some(ct)) =>
+      check_wit_type(wit_res, inner, ct, space, type_map, res_map, ctx)
+    ComponentValType::Future(None) => Err("future payload mismatch")
+    ComponentValType::TypeIndex(idx) =>
+      check_type_index(
+        id,
+        idx,
+        space,
+        type_map,
+        res_map,
+        (def, def_space) => {
+          check_wit_future(
+            wit_res, id, inner, def, def_space, type_map, res_map, ctx,
+          )
+        },
+        ctx,
+      )
+    _ => Err("expected future")
+  }
+}
+
+///|
+fn check_wit_stream(
+  wit_res : @wit.Resolve,
+  id : Int,
+  inner : @wit.RType,
+  comp_val : ComponentValType,
+  space : TypeSpace,
+  type_map : Map[String, UInt],
+  res_map : Map[String, UInt],
+  ctx : TypeResolveContext,
+) -> Result[Unit, String] {
+  match comp_val {
+    ComponentValType::Stream(Some(ct)) =>
+      check_wit_type(wit_res, inner, ct, space, type_map, res_map, ctx)
+    ComponentValType::Stream(None) => Err("stream payload mismatch")
+    ComponentValType::TypeIndex(idx) =>
+      check_type_index(
+        id,
+        idx,
+        space,
+        type_map,
+        res_map,
+        (def, def_space) => {
+          check_wit_stream(
+            wit_res, id, inner, def, def_space, type_map, res_map, ctx,
+          )
+        },
+        ctx,
+      )
+    _ => Err("expected stream")
   }
 }
 
@@ -463,9 +547,11 @@ fn check_wit_tuple(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_tuple(
-          wit_res, id, items, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_tuple(
+            wit_res, id, items, def, def_space, type_map, res_map, ctx,
+          )
+        },
         ctx,
       )
     _ => Err("expected tuple")
@@ -501,9 +587,9 @@ fn check_wit_flags(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_flags(
-          id, names, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_flags(id, names, def, def_space, type_map, res_map, ctx)
+        },
         ctx,
       )
     _ => Err("expected flags")
@@ -539,9 +625,9 @@ fn check_wit_enum(
         space,
         type_map,
         res_map,
-        (def, def_space) => check_wit_enum(
-          id, names, def, def_space, type_map, res_map, ctx,
-        ),
+        (def, def_space) => {
+          check_wit_enum(id, names, def, def_space, type_map, res_map, ctx)
+        },
         ctx,
       )
     _ => Err("expected enum")
