@@ -1,0 +1,11 @@
+import {
+  "moonbitlang/core/bytes",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x/fs" @fs,
+  "mizchi/wit" @wit,
+  "mizchi/mwac/component" @component,
+}
+
+import {
+  "mizchi/mwac/component" @component,
+} for "test"
