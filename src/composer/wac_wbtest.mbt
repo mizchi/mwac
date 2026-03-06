@@ -17,6 +17,7 @@ test "inline import func type check" {
       { name: b"arg", type_: ComponentValType::Primitive(PrimitiveType::U32) },
     ],
     results: [],
+    is_async: false,
   }
   let detail : ComponentDetail = {
     types: [ComponentTypeDef::Func(func_type)],
@@ -56,6 +57,7 @@ test "inline import func mismatch" {
       { name: b"arg", type_: ComponentValType::Primitive(PrimitiveType::U32) },
     ],
     results: [],
+    is_async: false,
   }
   let detail : ComponentDetail = {
     types: [ComponentTypeDef::Func(func_type)],
@@ -92,6 +94,7 @@ test "inline import interface type check" {
     results: [
       { name: None, type_: ComponentValType::Primitive(PrimitiveType::String) },
     ],
+    is_async: false,
   }
   let inst_def : InstanceTypeDef = {
     exports: [
@@ -137,6 +140,7 @@ test "inline import interface mismatch" {
     results: [
       { name: None, type_: ComponentValType::Primitive(PrimitiveType::String) },
     ],
+    is_async: false,
   }
   let inst_def : InstanceTypeDef = {
     exports: [

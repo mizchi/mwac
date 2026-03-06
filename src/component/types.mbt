@@ -66,6 +66,7 @@ pub(all) struct ComponentResult {
 pub(all) struct ComponentFuncType {
   params : Array[ComponentParam]
   results : Array[ComponentResult]
+  is_async : Bool
 } derive(Show, Eq)
 
 ///|

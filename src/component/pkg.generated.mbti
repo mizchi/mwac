@@ -98,6 +98,7 @@ pub impl Show for ComponentExternDesc
 pub(all) struct ComponentFuncType {
   params : Array[ComponentParam]
   results : Array[ComponentResult]
+  is_async : Bool
 }
 pub impl Eq for ComponentFuncType
 pub impl Show for ComponentFuncType

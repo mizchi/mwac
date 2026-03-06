@@ -353,6 +353,7 @@ fn parse_component_type(parser : Parser) -> ComponentTypeDef raise ParseError {
       ComponentTypeDef::Resource
     }
     0x40 | 0x43 => {
+      let is_async = tag == 0x43
       let param_count = parser.read_u32_leb128()
       let params : Array[ComponentParam] = []
       for _ in 0U..<param_count {
@@ -366,7 +367,7 @@ fn parse_component_type(parser : Parser) -> ComponentTypeDef raise ParseError {
         Some(ty) => results.push({ name: None, type_: ty })
         None => ()
       }
-      ComponentTypeDef::Func({ params, results })
+      ComponentTypeDef::Func({ params, results, is_async })
     }
     0x41 => {
       let decl_count = parser.read_u32_leb128()
