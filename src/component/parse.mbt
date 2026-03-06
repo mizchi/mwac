@@ -110,6 +110,7 @@ fn parse_component_detail_raise(
   let imported_instances : Array[ComponentTypeRef] = []
   let core_modules : Array[Bytes] = []
   let core_types : Array[CoreTypeRaw] = []
+  let raw_type_sections : Array[Bytes] = []
   while not(parser.eof()) {
     let section_id = parser.read_byte().to_uint()
     let section_size = parser.read_u32_leb128()
@@ -150,6 +151,8 @@ fn parse_component_detail_raise(
         }
       }
       7 => {
+        // Preserve raw type section payload for plug forwarding
+        raw_type_sections.push(parser.slice(section_start, section_end))
         let count = parser.read_u32_leb128()
         for _ in 0U..<count {
           types.push(parse_component_type(parser))
@@ -200,6 +203,7 @@ fn parse_component_detail_raise(
     imported_instances,
     core_modules,
     core_types,
+    raw_type_sections,
   }
 }
 

@@ -210,4 +210,5 @@ pub(all) struct ComponentDetail {
   imported_instances : Array[ComponentTypeRef]
   core_modules : Array[Bytes]
   core_types : Array[CoreTypeRaw]
+  raw_type_sections : Array[Bytes]
 } derive(Show, Eq)

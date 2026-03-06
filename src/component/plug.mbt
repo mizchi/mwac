@@ -90,6 +90,32 @@ fn is_supported_kind(_kind : ExternKind) -> Bool {
 }
 
 ///|
+/// Extract type index from import raw_desc. Returns -1 if no type reference.
+fn extract_type_index_from_raw_desc(raw_desc : Bytes) -> Int {
+  if raw_desc.length() < 2 {
+    return -1
+  }
+  let kind = raw_desc[0].to_uint()
+  // Instance(0x05), Func(0x01), Component(0x04) reference type indices
+  if kind != 0x05U && kind != 0x01U && kind != 0x04U {
+    return -1
+  }
+  let mut idx = 0
+  let mut shift = 0
+  let mut pos = 1
+  while pos < raw_desc.length() {
+    let byte = raw_desc[pos].to_int()
+    idx = idx | ((byte & 0x7F) << shift)
+    pos = pos + 1
+    if (byte & 0x80) == 0 {
+      break
+    }
+    shift = shift + 7
+  }
+  idx
+}
+
+///|
 fn bytes_eq(a : Bytes, b : Bytes) -> Bool {
   a == b
 }
@@ -452,6 +478,58 @@ pub fn plug_components(
   }
   push_section(out, 4U, socket_bytes.to_array())
 
+  // Section 7: type sections needed by forwarded imports.
+  // Only copy type sections that define types referenced by forwarded imports.
+  // Source components may have many type sections (interleaved with alias/canon),
+  // but we only need the ones that contain type indices used in import raw_desc.
+
+  // Collect needed type indices from forwarded imports
+  let needed_socket_types : Array[Int] = []
+  for i in 0..<merged_imports.length() {
+    let imp = merged_imports[i]
+    let type_idx = extract_type_index_from_raw_desc(imp.raw_desc)
+    if type_idx >= 0 {
+      needed_socket_types.push(type_idx)
+    }
+  }
+
+  // Copy only needed type sections from socket
+  let mut outer_type_count = 0
+  if needed_socket_types.length() > 0 {
+    let max_needed = {
+      let mut m = 0
+      for idx in needed_socket_types {
+        if idx > m {
+          m = idx
+        }
+      }
+      m
+    }
+    // Copy type sections until we've defined enough types
+    let mut types_so_far = 0
+    for section in socket_detail.raw_type_sections {
+      if types_so_far > max_needed {
+        break
+      }
+      push_section(out, 7U, section.to_array())
+      // Count types in this section (LEB128 at start)
+      let mut count = 0
+      let mut shift = 0
+      let mut p = 0
+      while p < section.length() {
+        let b = section[p].to_int()
+        count = count | ((b & 0x7F) << shift)
+        p = p + 1
+        if (b & 0x80) == 0 {
+          break
+        }
+        shift = shift + 7
+      }
+      types_so_far = types_so_far + count
+    }
+    outer_type_count = types_so_far
+  }
+
   // Section 10: imports (forwarded + plug imports)
   if merged_imports.length() > 0 {
     let payload : Array[Byte] = []
@@ -464,6 +542,7 @@ pub fn plug_components(
     }
     push_section(out, 10U, payload)
   }
+  let _ = outer_type_count
 
   // Section 5: instances (plugs)
   let mut used_plug_count = 0

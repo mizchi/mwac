@@ -1430,6 +1430,7 @@ test "resolve instance alias export" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let global_space = build_global_space(detail.types)
   let instance_cache : Map[UInt, InstanceExportSet] = {}
@@ -1472,6 +1473,7 @@ test "resolve instance alias outer" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let global_space = build_global_space(detail.types)
   let instance_cache : Map[UInt, InstanceExportSet] = {}
@@ -1519,6 +1521,7 @@ test "component type subtype checks exports" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let detail_b = {
     types: [
@@ -1543,6 +1546,7 @@ test "component type subtype checks exports" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let ctx_a = build_type_context(detail_a)
   let ctx_b = build_type_context(detail_b)

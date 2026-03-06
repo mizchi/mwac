@@ -35,6 +35,7 @@ test "inline import func type check" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let import_detail = detail.imports[0]
   match
@@ -75,6 +76,7 @@ test "inline import func mismatch" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let import_detail = detail.imports[0]
   let result = check_inline_import_type(
@@ -118,6 +120,7 @@ test "inline import interface type check" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let import_detail = detail.imports[0]
   match
@@ -164,6 +167,7 @@ test "inline import interface mismatch" {
     imported_instances: [],
     core_modules: [],
     core_types: [],
+    raw_type_sections: [],
   }
   let import_detail = detail.imports[0]
   let result = check_inline_import_type(
