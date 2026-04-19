@@ -71,18 +71,15 @@ pub(all) struct ComponentDetail {
   imported_instances : Array[ComponentTypeRef]
   core_modules : Array[Bytes]
   core_types : Array[CoreTypeRaw]
-}
-pub impl Eq for ComponentDetail
-pub impl Show for ComponentDetail
+  raw_type_sections : Array[Bytes]
+} derive(Eq)
 
 pub(all) struct ComponentExportDetail {
   name : Bytes
   kind : ExternKind
   index : UInt
   type_ref : ComponentTypeRef?
-}
-pub impl Eq for ComponentExportDetail
-pub impl Show for ComponentExportDetail
+} derive(Eq)
 
 pub(all) enum ComponentExternDesc {
   Module(UInt)
@@ -91,53 +88,39 @@ pub(all) enum ComponentExternDesc {
   Type(TypeBounds)
   Component(UInt)
   Instance(UInt)
-}
-pub impl Eq for ComponentExternDesc
-pub impl Show for ComponentExternDesc
+} derive(Eq)
 
 pub(all) struct ComponentFuncType {
   params : Array[ComponentParam]
   results : Array[ComponentResult]
   is_async : Bool
-}
-pub impl Eq for ComponentFuncType
-pub impl Show for ComponentFuncType
+} derive(Eq)
 
 pub(all) struct ComponentImportDetail {
   name : Bytes
   kind : ExternKind
   type_ref : ComponentTypeRef
-}
-pub impl Eq for ComponentImportDetail
-pub impl Show for ComponentImportDetail
+} derive(Eq)
 
 pub(all) struct ComponentInfo {
   imports : Array[ImportInfo]
   exports : Array[ExportInfo]
-}
-pub impl Eq for ComponentInfo
-pub impl Show for ComponentInfo
+} derive(Eq)
 
 pub(all) enum ComponentInstanceDef {
   Instantiate(UInt)
   FromExports(Array[ExportInfo])
-}
-pub impl Eq for ComponentInstanceDef
-pub impl Show for ComponentInstanceDef
+} derive(Eq)
 
 pub(all) struct ComponentParam {
   name : Bytes
   type_ : ComponentValType
-}
-pub impl Eq for ComponentParam
-pub impl Show for ComponentParam
+} derive(Eq)
 
 pub(all) struct ComponentResult {
   name : Bytes?
   type_ : ComponentValType
-}
-pub impl Eq for ComponentResult
-pub impl Show for ComponentResult
+} derive(Eq)
 
 pub(all) enum ComponentTypeDef {
   Defined(ComponentValType)
@@ -145,17 +128,13 @@ pub(all) enum ComponentTypeDef {
   Instance(InstanceTypeDef)
   Resource
   Component(ComponentTypeDetail)
-}
-pub impl Eq for ComponentTypeDef
-pub impl Show for ComponentTypeDef
+} derive(Eq)
 
 pub(all) struct ComponentTypeDetail {
   exports : Array[InstanceExport]
   entries : Array[InstanceTypeEntry]
   core_types : Array[CoreTypeRaw]
-}
-pub impl Eq for ComponentTypeDetail
-pub impl Show for ComponentTypeDetail
+} derive(Eq)
 
 pub(all) enum ComponentTypeRef {
   Module(UInt)
@@ -164,9 +143,7 @@ pub(all) enum ComponentTypeRef {
   Type(TypeBounds)
   Component(UInt)
   Instance(UInt)
-}
-pub impl Eq for ComponentTypeRef
-pub impl Show for ComponentTypeRef
+} derive(Eq)
 
 pub(all) enum ComponentValType {
   Primitive(PrimitiveType)
@@ -186,30 +163,22 @@ pub(all) enum ComponentValType {
   Future(ComponentValType?)
   Stream(ComponentValType?)
   FixedSizeList(ComponentValType, UInt)
-}
-pub impl Eq for ComponentValType
-pub impl Show for ComponentValType
+} derive(Eq)
 
 pub(all) enum CoreTypeKind {
   Module
   Other
-}
-pub impl Eq for CoreTypeKind
-pub impl Show for CoreTypeKind
+} derive(Eq)
 
 pub(all) struct CoreTypeRaw {
   kind : CoreTypeKind
   raw : Bytes
-}
-pub impl Eq for CoreTypeRaw
-pub impl Show for CoreTypeRaw
+} derive(Eq)
 
 pub(all) struct ExportInfo {
   name : Bytes
   kind : ExternKind
-}
-pub impl Eq for ExportInfo
-pub impl Show for ExportInfo
+} derive(Eq)
 
 pub(all) enum ExternKind {
   CoreModule
@@ -218,17 +187,14 @@ pub(all) enum ExternKind {
   Type
   Component
   Instance
-}
-pub impl Eq for ExternKind
+} derive(Eq)
 pub impl Show for ExternKind
 
 pub(all) struct ImportInfo {
   name : Bytes
   kind : ExternKind
   raw_desc : Bytes
-}
-pub impl Eq for ImportInfo
-pub impl Show for ImportInfo
+} derive(Eq)
 
 pub enum ImportRelation {
   Equal
@@ -251,16 +217,12 @@ pub(all) enum InstanceAliasTarget {
   Outer(UInt, UInt)
   Export(UInt, Bytes)
   Unknown
-}
-pub impl Eq for InstanceAliasTarget
-pub impl Show for InstanceAliasTarget
+} derive(Eq)
 
 pub(all) struct InstanceExport {
   name : Bytes
   type_ref : ComponentTypeRef
-}
-pub impl Eq for InstanceExport
-pub impl Show for InstanceExport
+} derive(Eq)
 
 pub struct InstanceExportSet {
   exports : Array[InstanceExport]
@@ -270,16 +232,12 @@ pub struct InstanceExportSet {
 pub(all) struct InstanceTypeDef {
   exports : Array[InstanceExport]
   entries : Array[InstanceTypeEntry]
-}
-pub impl Eq for InstanceTypeDef
-pub impl Show for InstanceTypeDef
+} derive(Eq)
 
 pub(all) enum InstanceTypeEntry {
   Local(ComponentTypeDef)
   Alias(InstanceAliasTarget)
-}
-pub impl Eq for InstanceTypeEntry
-pub impl Show for InstanceTypeEntry
+} derive(Eq)
 
 pub(all) struct InstantiateArgEntry {
   name : Bytes
@@ -321,16 +279,12 @@ pub(all) enum PrimitiveType {
   F64
   Char
   String
-}
-pub impl Eq for PrimitiveType
-pub impl Show for PrimitiveType
+} derive(Eq)
 
 pub(all) struct RecordField {
   name : Bytes
   type_ : ComponentValType
-}
-pub impl Eq for RecordField
-pub impl Show for RecordField
+} derive(Eq)
 
 pub struct ResolvedFuncType {
   func : ComponentFuncType
@@ -340,9 +294,7 @@ pub struct ResolvedFuncType {
 pub(all) enum TypeBounds {
   Eq(UInt)
   SubResource
-}
-pub impl Eq for TypeBounds
-pub impl Show for TypeBounds
+} derive(Eq)
 
 pub(all) struct TypeResolveContext {
   detail : ComponentDetail
@@ -360,9 +312,7 @@ pub(all) struct VariantCase {
   name : Bytes
   type_ : ComponentValType?
   refines : UInt?
-}
-pub impl Eq for VariantCase
-pub impl Show for VariantCase
+} derive(Eq)
 
 // Type aliases
 

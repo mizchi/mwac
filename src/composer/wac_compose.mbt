@@ -64,7 +64,7 @@ fn require_instance_idx(
 fn dirname(path : String) -> String {
   match path.rev_find("/") {
     Some(idx) => {
-      let prefix = path[:idx] catch { _ => "." }
+      let prefix = path[:idx]
       if prefix.is_empty() {
         "."
       } else {
@@ -105,7 +105,7 @@ pub fn compose_wac_source(
   let component_order : Array[String] = []
   for inst in instantiations {
     let pkg = inst.component.pkg
-    if not(component_sources.contains(pkg)) {
+    if !component_sources.contains(pkg) {
       component_sources.set(pkg, inst.component)
       component_order.push(pkg)
     }
@@ -198,7 +198,7 @@ pub fn compose_wac_source(
       match arg.source {
         ArgSource::Export(inst_name, export_name) => {
           let key = build_alias_key(inst_name, export_name)
-          if not(alias_map.contains(key)) {
+          if !alias_map.contains(key) {
             let inst_pos = match
               require_instance_idx(instance_index_map, inst_name) {
               Ok(v) => v
@@ -228,7 +228,7 @@ pub fn compose_wac_source(
         let inst_name = plan.inst
         let export_name = plan.name
         let key = build_alias_key(inst_name, export_name)
-        if not(alias_map.contains(key)) {
+        if !alias_map.contains(key) {
           let inst_pos = match
             require_instance_idx(instance_index_map, inst_name) {
             Ok(v) => v
@@ -256,7 +256,7 @@ pub fn compose_wac_source(
         let inst_plan = instantiations[inst_pos]
         for name, export_detail in inst_plan.component.export_detail_map {
           let key = build_alias_key(inst_name, name)
-          if not(alias_map.contains(key)) {
+          if !alias_map.contains(key) {
             let alias_idx = index_state.next(export_detail.kind)
             alias_map.set(key, alias_idx)
             alias_entries.push(
@@ -428,12 +428,12 @@ pub fn compose_wac_source(
           match check_component_targets(result, resolved) {
             Ok(_) => ()
             Err(e) =>
-              if not(best_effort) {
+              if !best_effort {
                 return Err("targets check failed: " + e)
               }
           }
         Err(e) =>
-          if not(best_effort) {
+          if !best_effort {
             return Err("targets resolve failed: " + e.to_string())
           }
       }
@@ -462,7 +462,7 @@ pub fn resolve_wac_summary(
   let component_seen : Map[String, Bool] = {}
   for inst in instantiations {
     let pkg = inst.component.pkg
-    if not(component_seen.contains(pkg)) {
+    if !component_seen.contains(pkg) {
       component_seen.set(pkg, true)
       components.push(pkg)
     }
@@ -473,7 +473,7 @@ pub fn resolve_wac_summary(
     for arg in inst.args {
       match arg.source {
         ArgSource::Import(import_ref) =>
-          if not(import_seen.contains(import_ref.import_name)) {
+          if !import_seen.contains(import_ref.import_name) {
             import_seen.set(import_ref.import_name, true)
             import_names.push(import_ref.import_name)
           }

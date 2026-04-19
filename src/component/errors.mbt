@@ -11,4 +11,30 @@ pub(all) suberror ParseError {
   UnsupportedSection(UInt) // Unsupported section type
   InvalidSectionOrder // Invalid section order
   NestedError(String) // Error in nested module/component
-} derive(Show)
+}
+
+///|
+pub impl Show for ParseError with output(self, logger) {
+  match self {
+    UnexpectedEof => logger.write_string("UnexpectedEof")
+    InvalidMagic => logger.write_string("InvalidMagic")
+    UnsupportedVersion => logger.write_string("UnsupportedVersion")
+    InvalidFormat(s) => {
+      logger.write_string("InvalidFormat(")
+      Show::output(s, logger)
+      logger.write_string(")")
+    }
+    InvalidLayer => logger.write_string("InvalidLayer")
+    UnsupportedSection(n) => {
+      logger.write_string("UnsupportedSection(")
+      Show::output(n, logger)
+      logger.write_string(")")
+    }
+    InvalidSectionOrder => logger.write_string("InvalidSectionOrder")
+    NestedError(s) => {
+      logger.write_string("NestedError(")
+      Show::output(s, logger)
+      logger.write_string(")")
+    }
+  }
+}

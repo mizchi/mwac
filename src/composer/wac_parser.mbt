@@ -101,7 +101,7 @@ fn WacParser::expect_char(
   self : WacParser,
   ch : Byte,
 ) -> Unit raise WacParseError {
-  if not(self.consume_char(ch)) {
+  if !self.consume_char(ch) {
     raise WacParseError::Message(
       "expected `\{String::from_array([ch.to_char()])}`",
     )
@@ -125,7 +125,7 @@ fn WacParser::starts_with(self : WacParser, kw : String) -> Bool {
 ///|
 fn WacParser::consume_keyword(self : WacParser, kw : String) -> Bool {
   self.skip_ws()
-  if not(self.starts_with(kw)) {
+  if !self.starts_with(kw) {
     return false
   }
   let end_pos = self.pos + kw.length()
@@ -136,7 +136,7 @@ fn WacParser::consume_keyword(self : WacParser, kw : String) -> Bool {
       boundary_ok = false
     }
   }
-  if not(boundary_ok) {
+  if !boundary_ok {
     return false
   }
   self.pos = end_pos
@@ -153,7 +153,7 @@ fn WacParser::parse_ident(self : WacParser) -> String raise WacParseError {
   }
   while self.pos < self.bytes.length() {
     let b = self.bytes[self.pos]
-    if not(is_ident_char(b)) {
+    if !is_ident_char(b) {
       break
     }
     self.pos = self.pos + 1
@@ -167,7 +167,7 @@ fn WacParser::parse_string_literal(
   self : WacParser,
 ) -> String raise WacParseError {
   self.skip_ws()
-  if not(self.consume_char(b'"')) {
+  if !self.consume_char(b'"') {
     raise WacParseError::Message("expected string literal")
   }
   let out : Array[Byte] = []
@@ -204,7 +204,7 @@ fn WacParser::parse_string_literal(
 
 ///|
 fn WacParser::skip_string(self : WacParser) -> Unit raise WacParseError {
-  if not(self.consume_char(b'"')) {
+  if !self.consume_char(b'"') {
     raise WacParseError::Message("expected string")
   }
   while true {
@@ -228,7 +228,7 @@ fn WacParser::skip_string(self : WacParser) -> Unit raise WacParseError {
 ///|
 fn WacParser::parse_brace_block(self : WacParser) -> String raise WacParseError {
   self.skip_ws()
-  if not(self.consume_char(b'{')) {
+  if !self.consume_char(b'{') {
     raise WacParseError::Message("expected '{'")
   }
   let start = self.pos - 1
@@ -346,7 +346,7 @@ fn WacParser::parse_package(self : WacParser) -> String raise WacParseError {
   }
   while self.pos < self.bytes.length() {
     let b = self.bytes[self.pos]
-    if not(is_pkg_char(b)) {
+    if !is_pkg_char(b) {
       break
     }
     self.pos = self.pos + 1
@@ -395,7 +395,7 @@ fn WacParser::parse_expr(self : WacParser) -> WacExpr raise WacParseError {
         let name = self.parse_name_or_string()
         self.skip_ws()
         if name.exact {
-          if not(self.consume_char(b':')) {
+          if !self.consume_char(b':') {
             raise WacParseError::Message("expected ':' after string argument")
           }
           let value = self.parse_expr()
@@ -411,7 +411,6 @@ fn WacParser::parse_expr(self : WacParser) -> WacExpr raise WacParseError {
       }
       self.skip_ws()
       let _ = self.consume_char(b',')
-
     }
     return WacExpr::New({ pkg, args })
   }
@@ -502,7 +501,7 @@ fn WacParser::parse_stmt(self : WacParser) -> WacStmt raise WacParseError {
 pub fn parse_wac(source : String) -> Result[WacDocument, WacParseError] {
   let parser = WacParser::new(source)
   parser.skip_ws()
-  if not(parser.consume_keyword("package")) {
+  if !parser.consume_keyword("package") {
     return Err(WacParseError::Message("missing package directive"))
   }
   let pkg = parser.parse_package() catch { e => return Err(e) }
