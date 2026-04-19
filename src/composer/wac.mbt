@@ -193,20 +193,10 @@ fn import_name_matches(actual : String, alias_name : String) -> Bool {
 ///|
 fn last_segment(name : String) -> String {
   match name.rev_find("/") {
-    Some(idx) =>
-      normalize_segment(
-        name[idx + 1:].to_string() catch {
-          _ => name.to_string()
-        },
-      )
+    Some(idx) => normalize_segment(name[idx + 1:].to_string())
     None =>
       match name.rev_find(":") {
-        Some(idx) =>
-          normalize_segment(
-            name[idx + 1:].to_string() catch {
-              _ => name.to_string()
-            },
-          )
+        Some(idx) => normalize_segment(name[idx + 1:].to_string())
         None => normalize_segment(name.to_string())
       }
   }
@@ -215,7 +205,7 @@ fn last_segment(name : String) -> String {
 ///|
 fn normalize_segment(segment : String) -> String {
   match segment.rev_find("@") {
-    Some(idx) => segment[:idx].to_string() catch { _ => segment }
+    Some(idx) => segment[:idx].to_string()
     None => segment
   }
 }
@@ -515,14 +505,10 @@ fn resolve_wac(
                   }
                   match value {
                     ArgValue::Import(binding) => {
-                      if not(import_name_matches(import_name, binding.target)) &&
-                        not(import_name_matches(binding.target, import_name)) &&
-                        not(
-                          import_name_matches(import_name, binding.import_name),
-                        ) &&
-                        not(
-                          import_name_matches(binding.import_name, import_name),
-                        ) {
+                      if !import_name_matches(import_name, binding.target) &&
+                        !import_name_matches(binding.target, import_name) &&
+                        !import_name_matches(import_name, binding.import_name) &&
+                        !import_name_matches(binding.import_name, import_name) {
                         return Err(
                           "import `\{binding.local_name}` does not match `\{import_name}`",
                         )
@@ -603,7 +589,7 @@ fn resolve_wac(
                       if import_detail.kind != ExternKind::Instance {
                         return Err("import `\{import_name}` expects instance")
                       }
-                      if not(instance_bindings.contains(inst_name)) {
+                      if !instance_bindings.contains(inst_name) {
                         return Err("unknown instance `\{inst_name}`")
                       }
                       let plan : ArgPlan = {
@@ -786,7 +772,7 @@ fn resolve_wac(
                 explicit_args.set(imp_name, plan)
                 used = true
               }
-              if not(used) {
+              if !used {
                 return Err(
                   "spread instance `\{inst_name}` has no matching exports",
                 )

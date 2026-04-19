@@ -27,12 +27,12 @@ fn compute_reachable_instances(
   for exp in exports {
     match exp {
       ExportPlan::Item(plan) =>
-        if not(reachable.contains(plan.inst)) {
+        if !reachable.contains(plan.inst) {
           reachable.set(plan.inst, true)
           queue.push(plan.inst)
         }
       ExportPlan::All(inst_name) =>
-        if not(reachable.contains(inst_name)) {
+        if !reachable.contains(inst_name) {
           reachable.set(inst_name, true)
           queue.push(inst_name)
         }
@@ -45,7 +45,7 @@ fn compute_reachable_instances(
     match deps_map.get(name) {
       Some(deps) =>
         for dep in deps {
-          if not(reachable.contains(dep)) {
+          if !reachable.contains(dep) {
             reachable.set(dep, true)
             queue.push(dep)
           }

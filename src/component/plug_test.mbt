@@ -126,12 +126,15 @@ test "plug wasi http p3 adapter + app" {
     }
   }
   println(
-    "adapter types: " + adapter_detail.types.length().to_string() +
+    "adapter types: " +
+    adapter_detail.types.length().to_string() +
     ", raw_type_sections: " +
     adapter_detail.raw_type_sections.length().to_string(),
   )
   for i, sec in adapter_detail.raw_type_sections {
-    println("  section " + i.to_string() + ": " + sec.length().to_string() + " bytes")
+    println(
+      "  section " + i.to_string() + ": " + sec.length().to_string() + " bytes",
+    )
   }
   let result = plug_components(adapter_bytes, [app_bytes], best_effort=true)
   let composed = match result {
